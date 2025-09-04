@@ -1,0 +1,35 @@
+
+services:
+  backend:
+    build: ./myapp
+    container_name: my-backend
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_HOST: db
+      DB_USER: root
+      DB_PASSWORD: tien1912
+      DB_NAME: myapp
+
+  frontend:
+    build: ./myapp_frontend
+    container_name: my-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+
+  db:
+    image: mysql:8
+    container_name: my-database
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: tien1912
+      MYSQL_DATABASE: myapp
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
