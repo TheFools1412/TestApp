@@ -1,33 +1,43 @@
+version: "3.9"
 
 services:
   backend:
     build: ./myapp
-    container_name: my-backend
+    container_name: backend
     ports:
       - "8000:8000"
-    depends_on:
-      - db
+    volumes:
+      - ./myapp:/app
     environment:
-      DB_HOST: db
+      DB_NAME: myapp
       DB_USER: root
       DB_PASSWORD: tien1912
-      DB_NAME: myapp
+      DB_HOST: db
+      DB_PORT: 3306
+    depends_on:
+      - db
 
   frontend:
     build: ./myapp_frontend
-    container_name: my-frontend
+    container_name: frontend
     ports:
-      - "3000:3000"
+      - "3001:3000"
+    volumes:
+      - ./myapp_frontend:/app
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8000
     depends_on:
       - backend
 
   db:
-    image: mysql:8
-    container_name: my-database
+    image: mysql:8.0
+    container_name: mysql_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: tien1912
       MYSQL_DATABASE: myapp
+    ports:
+      - "3307:3306"
     volumes:
       - db_data:/var/lib/mysql
 
